@@ -108,4 +108,8 @@ public class ItemController {
             }
         }
     }
+    
+    public java.sql.ResultSet getAllItems() {
+        return itemDAO.getAllItems();
+    }
 }

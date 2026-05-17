@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
+import controller.*;
+import model.*;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.ResultSet;
 /**
  *
  * @author HP
@@ -13,8 +17,35 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Creates new form MainFrame
      */
+    private controller.ItemController itemController;
+
     public MainFrame() {
         initComponents();
+        itemController = new controller.ItemController();
+        loadData();
+        setLocationRelativeTo(null);
+    }
+    
+    private void loadData() {
+        try {
+            DefaultTableModel model = (DefaultTableModel) tabelBuku.getModel();
+            model.setRowCount(0);
+
+            ResultSet rs = itemController.getAllItems();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String judul = rs.getString("judul");
+                int tahun = rs.getInt("tahun_terbit");
+                String tipe = rs.getString("tipe");
+                String pembuat = tipe.equals("Buku") ? rs.getString("pengarang") : rs.getString("penerbit");
+                String kode = tipe.equals("Buku") ? rs.getString("isbn") : rs.getString("edisi");
+
+                model.addRow(new Object[]{id, judul, tahun, tipe, pembuat, kode});
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -146,16 +177,42 @@ public class MainFrame extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         // tambah
+        new FormDialog().setVisible(true);
+        loadData();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         //edit
+        int row = tabelBuku.getSelectedRow();
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih data dulu!");
+            return;
+        }
+
+        int id = (int) tabelBuku.getValueAt(row, 0);
+        String judul = tabelBuku.getValueAt(row, 1).toString();
+        String tahun = tabelBuku.getValueAt(row, 2).toString();
+        String jenis = tabelBuku.getValueAt(row, 3).toString();
+        String pembuat = tabelBuku.getValueAt(row, 4).toString();
+        String kode = tabelBuku.getValueAt(row, 5).toString();
+
+        new FormDialog(id, judul, tahun, jenis, pembuat, kode).setVisible(true);
+        loadData();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         // hapus
+        int row = tabelBuku.getSelectedRow();
+        if (row == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Pilih data dulu!");
+            return;
+        }
+
+        int id = (int) tabelBuku.getValueAt(row, 0);
+        itemController.hapusItem(id);
+        loadData();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**

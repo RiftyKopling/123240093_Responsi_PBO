@@ -102,4 +102,16 @@ public class ItemDAO {
             return false;
         }
     }
+    
+    public ResultSet getAllItems() {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM item_perpustakaan";
+            return stmt.executeQuery(sql);
+        } catch (SQLException e) {
+            System.out.println("Gagal mengambil data: " + e.getMessage());
+            return null;
+        }
+    }
 }
