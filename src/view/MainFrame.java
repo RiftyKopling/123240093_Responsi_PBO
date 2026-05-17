@@ -4,6 +4,7 @@
  */
 package view;
 import controller.*;
+import java.awt.TextField;
 import model.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,9 +25,9 @@ public class MainFrame extends javax.swing.JFrame {
         itemController = new controller.ItemController();
         loadData();
         setLocationRelativeTo(null);
-    }
+    }  
     
-    private void loadData() {
+    void loadData() {
         try {
             DefaultTableModel model = (DefaultTableModel) tabelBuku.getModel();
             model.setRowCount(0);
@@ -38,12 +39,24 @@ public class MainFrame extends javax.swing.JFrame {
                 String judul = rs.getString("judul");
                 int tahun = rs.getInt("tahun_terbit");
                 String tipe = rs.getString("tipe");
-                String pembuat = tipe.equals("Buku") ? rs.getString("pengarang") : rs.getString("penerbit");
-                String kode = tipe.equals("Buku") ? rs.getString("isbn") : rs.getString("edisi");
 
+                String pembuat = "";
+                String kode = "";
+
+                if (tipe.equals("Buku")) {
+                    pembuat = rs.getString("pengarang");
+                    kode = rs.getString("isbn");
+                } else {
+                    pembuat = rs.getString("penerbit");
+                    kode = rs.getString("edisi");
+                }
                 model.addRow(new Object[]{id, judul, tahun, tipe, pembuat, kode});
             }
+
+            System.out.println("Data berhasil dimuat!");
+
         } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -88,14 +101,25 @@ public class MainFrame extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tabelBuku.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelBukuMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelBuku);
         if (tabelBuku.getColumnModel().getColumnCount() > 0) {
-            tabelBuku.getColumnModel().getColumn(0).setMinWidth(20);
-            tabelBuku.getColumnModel().getColumn(1).setMinWidth(50);
-            tabelBuku.getColumnModel().getColumn(2).setMinWidth(100);
-            tabelBuku.getColumnModel().getColumn(3).setMinWidth(50);
-            tabelBuku.getColumnModel().getColumn(4).setMinWidth(120);
-            tabelBuku.getColumnModel().getColumn(5).setMinWidth(100);
+            tabelBuku.getColumnModel().getColumn(0).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(0).setPreferredWidth(20);
+            tabelBuku.getColumnModel().getColumn(1).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(1).setPreferredWidth(60);
+            tabelBuku.getColumnModel().getColumn(2).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(2).setPreferredWidth(90);
+            tabelBuku.getColumnModel().getColumn(3).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(3).setPreferredWidth(60);
+            tabelBuku.getColumnModel().getColumn(4).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(4).setPreferredWidth(120);
+            tabelBuku.getColumnModel().getColumn(5).setResizable(false);
+            tabelBuku.getColumnModel().getColumn(5).setPreferredWidth(90);
         }
 
         jLabel1.setText("ID : ");
@@ -214,6 +238,18 @@ public class MainFrame extends javax.swing.JFrame {
         itemController.hapusItem(id);
         loadData();
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void tabelBukuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelBukuMouseClicked
+        // TODO add your handling code here:
+        int baris = tabelBuku.getSelectedRow();
+
+        // ambil data untuk kolom
+        String id = tabelBuku.getValueAt(baris, 0).toString();
+        String judul = tabelBuku.getValueAt(baris, 1).toString();
+
+        jTextField1.setText(id);
+        jTextField2.setText(judul);
+    }//GEN-LAST:event_tabelBukuMouseClicked
 
     /**
      * @param args the command line arguments

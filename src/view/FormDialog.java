@@ -3,12 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package view;
-
 /**
  *
  * @author HP
  */
 public class FormDialog extends javax.swing.JFrame {
+    
+    private MainFrame mainframe;
     private boolean isEdit = false;
     private int idItem = 0;
     /**
@@ -181,7 +182,6 @@ public class FormDialog extends javax.swing.JFrame {
             return;
         }
 
-
         controller.ItemController controller = new controller.ItemController();
 
         if (isEdit) {
@@ -199,6 +199,7 @@ public class FormDialog extends javax.swing.JFrame {
             }
         }
         this.dispose();
+              
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
